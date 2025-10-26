@@ -43,6 +43,11 @@ const alertMessage = document.getElementById('alert-message');
 // API базовый URL
 const API_BASE = window.location.origin;
 
+// Создаем тост для уведомлений
+const toast = document.createElement('div');
+toast.className = 'toast';
+document.body.appendChild(toast);
+
 // Функции для работы с сервером
 async function saveGameState() {
     if (!gameData.gameId) {
@@ -64,15 +69,15 @@ async function saveGameState() {
         const result = await response.json();
         if (result.success) {
             console.log('Game saved successfully');
-            showAlert('Игра сохранена!', 'success');
-            updateGameIdDisplay();
+            // Без уведомления для пользователя
+            updateGameLinkDisplay();
             return true;
         } else {
             throw new Error(result.error);
         }
     } catch (error) {
         console.error('Ошибка при сохранении игры:', error);
-        showAlert('Ошибка при сохранении игры: ' + error.message);
+        showToast('Ошибка при сохранении игры', 'error');
         return false;
     }
 }
@@ -92,7 +97,7 @@ async function loadGameState(gameId) {
             Object.assign(gameData, result.gameData);
             gameData.gameId = gameId;
             
-            updateGameIdDisplay();
+            updateGameLinkDisplay();
             
             if (gameData.players.length > 0) {
                 if (gameData.currentRound < gameData.rounds.length) {
@@ -112,7 +117,7 @@ async function loadGameState(gameId) {
         }
     } catch (error) {
         console.error('Ошибка при загрузке игры:', error);
-        showAlert('Ошибка при загрузке игры: ' + error.message);
+        showToast('Ошибка при загрузке игры', 'error');
         return false;
     }
 }
@@ -129,40 +134,66 @@ async function createNewGame() {
         const result = await response.json();
         if (result.success) {
             gameData.gameId = result.gameId;
-            updateGameIdDisplay();
+            updateGameLinkDisplay();
             return true;
         } else {
             throw new Error(result.error);
         }
     } catch (error) {
         console.error('Ошибка при создании новой игры:', error);
-        showAlert('Ошибка при создании новой игры: ' + error.message);
+        showToast('Ошибка при создании новой игры', 'error');
         return false;
     }
 }
 
-// Обновление отображения ID игры
-function updateGameIdDisplay() {
-    const displayElements = [
-        document.getElementById('display-game-id'),
-        document.getElementById('result-game-id'),
-        document.getElementById('current-game-id')
-    ];
-    
-    displayElements.forEach(element => {
-        if (element) {
-            element.textContent = gameData.gameId || '-';
-        }
-    });
-    
-    // Показываем информацию об игре на стартовом экране, если игра существует
-    const gameInfo = document.getElementById('game-info');
-    const loadGameBtn = document.getElementById('load-game-btn');
+// Обновление отображения ссылки на игру
+function updateGameLinkDisplay() {
+    const savedGameInfo = document.getElementById('saved-game-info');
+    const gameLinkSection = document.getElementById('game-link-section');
+    const gameLinkInput = document.getElementById('game-link-input');
     
     if (gameData.gameId && gameData.players.length > 0) {
-        if (gameInfo) gameInfo.style.display = 'block';
-        if (loadGameBtn) loadGameBtn.style.display = 'inline-block';
+        const gameUrl = `${window.location.origin}?gameId=${gameData.gameId}`;
+        
+        // Показываем информацию о сохраненной игре на стартовом экране
+        if (savedGameInfo) {
+            savedGameInfo.style.display = 'block';
+        }
+        
+        // Показываем секцию с ссылкой
+        if (gameLinkSection) {
+            gameLinkSection.style.display = 'block';
+        }
+        
+        // Обновляем поле с ссылкой
+        if (gameLinkInput) {
+            gameLinkInput.value = gameUrl;
+        }
+        
+        // Сохраняем в localStorage
+        localStorage.setItem('pokerGameId', gameData.gameId);
+    } else {
+        if (savedGameInfo) savedGameInfo.style.display = 'none';
+        if (gameLinkSection) gameLinkSection.style.display = 'none';
     }
+}
+
+// Показать тост-уведомление
+function showToast(message, type = 'success') {
+    toast.textContent = message;
+    toast.className = 'toast';
+    
+    if (type === 'error') {
+        toast.style.background = 'var(--red)';
+    } else {
+        toast.style.background = '#4caf50';
+    }
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
 }
 
 // Инициализация
@@ -200,8 +231,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('end-game-btn').addEventListener('click', endGame);
     document.getElementById('new-game-btn').addEventListener('click', newGame);
     document.getElementById('back-to-game-btn').addEventListener('click', backToGame);
-    document.getElementById('save-game-btn').addEventListener('click', manualSaveGame);
     document.getElementById('share-game-btn').addEventListener('click', shareGame);
+    document.getElementById('share-result-btn').addEventListener('click', shareGame);
     document.getElementById('copy-link-btn').addEventListener('click', copyGameLink);
 });
 
@@ -212,15 +243,9 @@ async function loadCurrentGame() {
     }
 }
 
-// Ручное сохранение игры
-async function manualSaveGame() {
-    await saveGameState();
-}
-
 // Поделиться игрой
 function shareGame() {
     copyGameLink();
-    showAlert('Ссылка на игру скопирована в буфер обмена!', 'success');
 }
 
 // Копирование ссылки на игру
@@ -230,7 +255,7 @@ function copyGameLink() {
     const gameUrl = `${window.location.origin}?gameId=${gameData.gameId}`;
     
     navigator.clipboard.writeText(gameUrl).then(() => {
-        console.log('Game link copied to clipboard');
+        showToast('Ссылка скопирована в буфер обмена!');
     }).catch(err => {
         console.error('Failed to copy game link: ', err);
         // Fallback для старых браузеров
@@ -240,6 +265,7 @@ function copyGameLink() {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
+        showToast('Ссылка скопирована в буфер обмена!');
     });
 }
 
@@ -315,7 +341,6 @@ async function startGame() {
     showScreen(gameScreen);
     
     await saveGameState();
-    localStorage.setItem('pokerGameId', gameData.gameId);
 }
 
 // Создание стадий игры
@@ -686,19 +711,9 @@ function updateScoreHistory() {
 }
 
 // Показать предупреждение
-function showAlert(message, type = 'error') {
+function showAlert(message) {
     alertMessage.textContent = message;
-    alertMessage.className = 'alert';
-    
-    if (type === 'success') {
-        alertMessage.classList.add('success-alert');
-    }
-    
     alertMessage.classList.add('show');
-    
-    setTimeout(() => {
-        hideAlert();
-    }, type === 'success' ? 3000 : 5000);
 }
 
 // Скрыть предупреждение
@@ -786,7 +801,7 @@ async function newGame() {
         showScreen(startScreen);
         
         localStorage.removeItem('pokerGameId');
-        updateGameIdDisplay();
+        updateGameLinkDisplay();
     }
 }
 

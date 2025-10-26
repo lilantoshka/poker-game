@@ -13,11 +13,10 @@
         <div id="start-screen" class="screen active">
             <h1>Расписной Покер</h1>
             
-            <div class="game-info" id="game-info" style="display: none;">
+            <div class="saved-game-info" id="saved-game-info" style="display: none;">
                 <div class="info-card">
-                    <h3>Текущая игра</h3>
-                    <p id="current-game-id">Загрузка...</p>
-                    <button id="copy-link-btn" class="btn btn-small">Скопировать ссылку</button>
+                    <h3>Есть сохраненная игра</h3>
+                    <button id="load-game-btn" class="btn btn-secondary">Продолжить игру</button>
                 </div>
             </div>
             
@@ -35,7 +34,14 @@
             </div>
             
             <button id="start-game-btn" class="btn">Начать игру</button>
-            <button id="load-game-btn" class="btn btn-secondary" style="display: none;">Продолжить игру</button>
+            
+            <div class="game-link-section" id="game-link-section" style="display: none;">
+                <h3>Ссылка для продолжения на другом устройстве:</h3>
+                <div class="link-container">
+                    <input type="text" id="game-link-input" readonly>
+                    <button id="copy-link-btn" class="btn btn-small">Копировать</button>
+                </div>
+            </div>
             
             <div class="company-info">
                 <p class="company-name">Gregson Company</p>
@@ -48,13 +54,6 @@
         <!-- Игровой экран -->
         <div id="game-screen" class="screen">
             <h1>Расписной Покер</h1>
-            
-            <div class="game-header">
-                <div class="game-id-display">
-                    ID игры: <span id="display-game-id">-</span>
-                    <button id="share-game-btn" class="btn btn-small">Поделиться</button>
-                </div>
-            </div>
             
             <div class="alert" id="alert-message"></div>
             
@@ -97,7 +96,7 @@
             
             <div class="btn-group">
                 <button id="prev-round-btn" class="btn">Предыдущий раунд</button>
-                <button id="save-game-btn" class="btn">Сохранить игру</button>
+                <button id="share-game-btn" class="btn btn-secondary">Поделиться игрой</button>
                 <button id="end-game-btn" class="btn btn-danger">Завершить игру</button>
             </div>
             
@@ -113,10 +112,6 @@
         <div id="result-screen" class="screen">
             <h1>Результаты игры</h1>
             
-            <div class="game-id-display">
-                ID игры: <span id="result-game-id">-</span>
-            </div>
-            
             <div class="podium" id="podium">
                 <!-- Пьедестал будет заполнен динамически -->
             </div>
@@ -128,6 +123,7 @@
             <div class="btn-group">
                 <button id="new-game-btn" class="btn">Новая игра</button>
                 <button id="back-to-game-btn" class="btn btn-secondary">Вернуться к игре</button>
+                <button id="share-result-btn" class="btn btn-secondary">Поделиться результатами</button>
             </div>
             
             <div class="rules-info">
