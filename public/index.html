@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписной Покер</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Стартовый экран -->
+        <div id="start-screen" class="screen active">
+            <h1>Расписной Покер</h1>
+            
+            <div class="game-info" id="game-info" style="display: none;">
+                <div class="info-card">
+                    <h3>Текущая игра</h3>
+                    <p id="current-game-id">Загрузка...</p>
+                    <button id="copy-link-btn" class="btn btn-small">Скопировать ссылку</button>
+                </div>
+            </div>
+            
+            <h2>Количество игроков:</h2>
+            <div class="player-count-buttons">
+                <button class="player-count-btn" data-count="3">3</button>
+                <button class="player-count-btn" data-count="4">4</button>
+                <button class="player-count-btn" data-count="5">5</button>
+                <button class="player-count-btn" data-count="6">6</button>
+            </div>
+            
+            <h2>Имена игроков:</h2>
+            <div class="player-inputs" id="player-inputs-container">
+                <!-- Игроки будут добавлены динамически -->
+            </div>
+            
+            <button id="start-game-btn" class="btn">Начать игру</button>
+            <button id="load-game-btn" class="btn btn-secondary" style="display: none;">Продолжить игру</button>
+            
+            <div class="company-info">
+                <p class="company-name">Gregson Company</p>
+                <p>Snus Production</p>
+                <p>Профессиональные решения для карточных игр</p>
+                <p>&copy; 2025 Расписной Покер. Все права защищены.</p>
+            </div>
+        </div>
+        
+        <!-- Игровой экран -->
+        <div id="game-screen" class="screen">
+            <h1>Расписной Покер</h1>
+            
+            <div class="game-header">
+                <div class="game-id-display">
+                    ID игры: <span id="display-game-id">-</span>
+                    <button id="share-game-btn" class="btn btn-small">Поделиться</button>
+                </div>
+            </div>
+            
+            <div class="alert" id="alert-message"></div>
+            
+            <div class="game-stages" id="game-stages">
+                <!-- Стадии игры будут добавлены динамически -->
+            </div>
+            
+            <h2 id="current-round">Игра: 1 карта (Обычная)</h2>
+            
+            <button id="next-round-btn" class="btn" style="margin-bottom: 30px;">Следующий раунд</button>
+            
+            <div class="players-game" id="players-game-container">
+                <!-- Игроки и их поля ввода будут добавлены динамически -->
+            </div>
+            
+            <h2>Общий счет</h2>
+            <div class="score-table-container">
+                <table class="score-table">
+                    <thead>
+                        <tr>
+                            <th>Игрок</th>
+                            <th>Заказано</th>
+                            <th>Взято</th>
+                            <th>Очки</th>
+                            <th>Всего</th>
+                        </tr>
+                    </thead>
+                    <tbody id="score-table-body">
+                        <!-- Данные счета будут добавлены динамически -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="score-history">
+                <h3>История очков (последние 3 раунда)</h3>
+                <div class="history-list" id="score-history-list">
+                    <!-- История очков будет добавлена динамически -->
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button id="prev-round-btn" class="btn">Предыдущий раунд</button>
+                <button id="save-game-btn" class="btn">Сохранить игру</button>
+                <button id="end-game-btn" class="btn btn-danger">Завершить игру</button>
+            </div>
+            
+            <div class="company-info">
+                <p class="company-name">Gregson Company</p>
+                <p>Snus Production</p>
+                <p>Профессиональные решения для карточных игр</p>
+                <p>&copy; 2025 Расписной Покер. Все права защищены.</p>
+            </div>
+        </div>
+        
+        <!-- Экран результатов -->
+        <div id="result-screen" class="screen">
+            <h1>Результаты игры</h1>
+            
+            <div class="game-id-display">
+                ID игры: <span id="result-game-id">-</span>
+            </div>
+            
+            <div class="podium" id="podium">
+                <!-- Пьедестал будет заполнен динамически -->
+            </div>
+            
+            <div class="other-players" id="other-players">
+                <!-- Остальные игроки будут добавлены динамически -->
+            </div>
+            
+            <div class="btn-group">
+                <button id="new-game-btn" class="btn">Новая игра</button>
+                <button id="back-to-game-btn" class="btn btn-secondary">Вернуться к игре</button>
+            </div>
+            
+            <div class="rules-info">
+                <h3>Правила подсчета очков:</h3>
+                <p>+10 за взятку, -10 за недобранную взятку, пасс без взяток +5, пасс с взятками +1 за взятку</p>
+                <p>В специграх: Бескозырка, Тёмная, Мизер, Голда - применяются особые правила</p>
+            </div>
+            
+            <div class="company-info">
+                <p class="company-name">Gregson Company</p>
+                <p>Snus Production</p>
+                <p>Профессиональные решения для карточных игр</p>
+                <p>&copy; 2025 Расписной Покер. Все права защищены.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
